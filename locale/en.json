@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Remaining balance",
+    "description": "Shows the signed-in account's remaining credit in the composer statistics row."
+  }
+}

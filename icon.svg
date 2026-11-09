@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Balance">
+  <rect x="8" y="16" width="48" height="34" rx="7" fill="#2f6feb"/>
+  <rect x="8" y="24" width="48" height="8" fill="#1b4fbe"/>
+  <circle cx="45" cy="40" r="7" fill="#ffffff"/>
+  <circle cx="45" cy="40" r="3" fill="#2f6feb"/>
+</svg>
