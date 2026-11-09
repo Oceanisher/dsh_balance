@@ -1,3 +1,5 @@
+> Deepseek Harness 插件：显示账号余额
+
 # @local/dsh-balance
 
 在输入框下方的统计行（`conversation.composer.dock`）里显示当前登录账号的剩余金额。
