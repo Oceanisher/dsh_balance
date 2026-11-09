@@ -4,13 +4,17 @@
 
 ## 安装
 
-直接从 Git 仓库安装（把地址换成你自己的仓库）：
+在 DSH 中执行：
 
 ```
-plugin_manager install_bundle target=git+https://github.com/<owner>/dsh-balance.git#v1.0.0
+plugin_manager install_bundle target=git+https://github.com/Oceanisher/dsh_balance.git#v1.0.0
 ```
 
-也可以解压 tgz 或用目录路径安装，见仓库根目录的安装说明。安装后需要重启 DSH。
+- `#v1.0.0` 钉住版本；省略则跟随默认分支 `main`。
+- 也可以在侧边栏 **Plugins** 页面安装；tgz 或本地目录同样支持。
+- 安装后需要**重启 DSH**：客户端代码在启动时组装，仅刷新页面可能拿到旧代码。
+- 仓库没有构建步骤、没有第三方依赖，安装时不会运行 `prepare` 之类的构建脚本。
+- 必须是 **DeepSeek 账号登录**。API Key 模式下没有账户余额可读，控件会隐藏，不影响其他界面。
 
 ## 显示规则
 
@@ -48,19 +52,24 @@ plugin_manager install_bundle target=git+https://github.com/<owner>/dsh-balance.
 node dev/client-harness.mjs
 ```
 
-## 安装与卸载
+## 本地开发安装
 
-安装（已执行）：
+开发时直接按目录安装：
 
 ```
 plugin_manager install_bundle target=<本目录绝对路径>
 ```
 
-卸载：`plugin_manager remove_bundle target=@local/dsh-balance`。
+profile 会记录为 `link:`，因此改完 `client.js` 后重启 DSH 即可生效，不必重新安装。
 
-当前 profile 以 `link:` 方式引用本目录，因此改完 `client.js` 后需要重启 DSH（仅刷新页面可能仍拿到旧代码）；Host 半的重启在安装时会自动 HMR。
+## 卸载
+
+```
+plugin_manager remove_bundle target=@local/dsh-balance
+```
 
 ## 已知限制
 
 - `clientVersion()` 先读 `window.__DSH_BOOT__` 上的版本；读不到时回退到 `0.2.2-rc.1`。DSH 升级后若版本回退值过期，余额读取可能被 Platform 拒绝，此时控件会安静隐藏。
 - 余额只在上述时机刷新，一轮对话进行中不会逐 token 变化。
+- Git 依赖没有自动更新通道：发新版就打新 tag，用户用新地址重装。
