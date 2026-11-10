@@ -20,11 +20,13 @@ window.__ModuleLoader__.load({
     const SETTLE_DEBOUNCE_MS = 1500;
 
     const CSS = [
+      '.dsh-balance-anchor{display:inline-flex;align-items:center;order:1}',
       '.dsh-balance-pill{display:inline-flex;align-items:center;gap:4px;margin:0;padding:3px 2px;',
       'border:0;background:0 0;border-radius:4px;font-size:12px;line-height:18px;',
       'font-variant-numeric:tabular-nums;color:var(--dsw-alias-label-tertiary);cursor:pointer}',
       '.dsh-balance-pill:focus-visible{outline:none;color:var(--dsw-alias-label-secondary)}',
       '@media (hover:hover){.dsh-balance-pill:hover{color:var(--dsw-alias-label-secondary)}}',
+      '.dsh-balance-icon{flex:none;display:block}',
     ].join('');
 
     /** @returns the UI language tag in effect right now. */
@@ -91,6 +93,30 @@ window.__ModuleLoader__.load({
     /** @returns true for a wallet row carrying a usable balance string. */
     function isWallet(wallet) {
       return wallet !== null && typeof wallet === 'object' && typeof wallet.balance === 'string';
+    }
+
+    /**
+     * Monochrome outline wallet, drawn to match the shipped 16px icons: no fill,
+     * `currentColor` stroke, round caps, so it inherits the pill's text color.
+     * @returns the icon element.
+     */
+    function WalletIcon() {
+      return h('svg', {
+        className: 'dsh-balance-icon',
+        viewBox: '0 0 16 16',
+        width: 16,
+        height: 16,
+        'aria-hidden': true,
+        focusable: 'false',
+        fill: 'none',
+        stroke: 'currentColor',
+        strokeWidth: 1.25,
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+      },
+        h('rect', { x: 1.9, y: 3.6, width: 12.2, height: 8.8, rx: 2 }),
+        h('path', { d: 'M1.9 6.6h12.2' }),
+        h('circle', { cx: 11.3, cy: 9, r: 1.05 }));
     }
 
     /** Latest reader bound by the mounted plugin, so the dock control works even
@@ -168,7 +194,7 @@ window.__ModuleLoader__.load({
             bonus.length > 0 ? copy('bonus') + '\uff1a' + bonus.map(walletText).join(' \u00b7 ') : null,
             copy('refresh'),
           ].filter((line) => line !== null).join('\uff1b');
-          setView({ text: copy('prefix') + wallets.map(walletText).join(' \u00b7 '), detail });
+          setView({ amount: wallets.map(walletText).join(' \u00b7 '), detail });
         };
         load();
         reloadRef.current = () => { load(true); };
@@ -192,14 +218,18 @@ window.__ModuleLoader__.load({
       }, []);
 
       if (view === null) return null;
-      return h('span', { 'data-composer-stat': 'balance', style: { display: 'inline-flex', alignItems: 'center' } },
+      // The dock row is a flex container whose only other child is the context
+      // meter rendered after the slot, so `order: 1` puts this last.
+      return h('span', { className: 'dsh-balance-anchor', 'data-composer-stat': 'balance' },
         h('button', {
           type: 'button',
           className: 'dsh-balance-pill',
           title: view.detail,
-          'aria-label': view.text + ' \u2014 ' + copy('refresh'),
+          'aria-label': copy('prefix') + view.amount + ' \u2014 ' + copy('refresh'),
           onClick: () => { reloadRef.current(); },
-        }, view.text));
+        },
+          h(WalletIcon),
+          h('span', null, view.amount)));
     }
 
     return {
