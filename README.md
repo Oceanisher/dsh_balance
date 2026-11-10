@@ -1,3 +1,5 @@
+> Deepseek Harness 插件：显示账号余额
+
 # dsh-balance
 
 在 DSH 输入框下方的统计行显示当前登录账号的剩余余额。
